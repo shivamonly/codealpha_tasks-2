@@ -1,7 +1,5 @@
 {
   "name": "core_backend",
-  "v{
-  "name": "core_backend",
   "version": "1.0.0",
   "description": "Core collaborative project management backend",
   "main": "server.js",
@@ -27,8 +25,5 @@
   },
   "engines": {
     "node": ">=18"
-  }
-}
-    "prisma": "^5.14.0"
   }
 }
