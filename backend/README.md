@@ -1,6 +1,6 @@
 # Core Backend
 
-Express + Prisma + SQLite backend for Core. It also serves the static web frontend from `../syncboard_frontend/web`.
+Express + Prisma + SQLite backend for Core. It also serves the static web frontend from `../frontend/web`.
 
 ## Scripts
 
@@ -34,3 +34,4 @@ The API and website run at `http://localhost:3100`.
 - `DELETE /api/notifications`
 
 Socket.io rooms are authenticated with the JWT and scoped by project/user rooms.
+
