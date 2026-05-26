@@ -4,6 +4,9 @@
   "description": "Core collaborative project management backend",
   "main": "server.js",
   "scripts": {
+    "build": "prisma generate",
+  "build": "prisma generate",
+    "postinstall": "prisma generate",
     "start": "node server.js",
     "seed": "node prisma/seed.js",
     "db:push": "prisma db push"
@@ -21,3 +24,5 @@
     "prisma": "^5.14.0"
   }
 }
+
+
