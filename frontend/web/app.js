@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://codealpha-tasks-2-s5uz.onrender.com';
+const BACKEND_URL = 'https://core-backend-u2me.onrender.com';
 
 const API_BASE =
   window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
