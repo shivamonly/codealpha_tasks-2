@@ -1,0 +1,19 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render Deployment
+        run: |
+          curl https://api.render.com/deploy/srv-YOUR_RENDER_SERVICE_ID?key=${{ secrets.RENDER_DEPLOY_KEY }}
+        
+        # To use this:
+        # 1. Get your Render service ID from Render dashboard
+        # 2. Go to Render Account Settings → API Keys → Create
+        # 3. Add to GitHub Secrets as RENDER_DEPLOY_KEY
+        # 4. Replace YOUR_RENDER_SERVICE_ID with your actual service ID

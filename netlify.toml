@@ -1,8 +1,24 @@
 [build]
   publish = "frontend/web"
+  command = "echo 'Frontend only - backend deployed separately'"
 
+# Redirect all non-file requests to index.html for SPA routing
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  conditions = { NOT = [{ Cookie = "token" }] }
+
+# Don't redirect API calls (these go to backend)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api"
+  status = 200
+
+# Allow js/css/image files to be served directly
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
 
