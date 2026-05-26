@@ -1,3 +1,3 @@
 runtime = "node"
-buildCommand = "cd backend && npm install && npm run db:push && npm run seed"
+buildCommand = "cd backend && npm install && npm run db:push"
 startCommand = "cd backend && npm start"

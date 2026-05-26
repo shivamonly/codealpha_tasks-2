@@ -11,7 +11,7 @@ A real-time Kanban-style workspace for teams. Create projects, organize tasks in
 - Invite team members to projects
 
 ## Stack
-- Backend: Node.js, Express, Socket.io, Prisma, SQLite
+- Backend: Node.js, Express, Socket.io, Prisma, PostgreSQL
 - Frontend: Vanilla JS, Material Symbols Icons, Inter font
 
 ## Quick Start - LOCAL DEVELOPMENT
@@ -21,7 +21,6 @@ A real-time Kanban-style workspace for teams. Create projects, organize tasks in
 cd backend
 npm install
 npm run db:push
-npm run seed
 npm start
 ```
 
@@ -30,55 +29,38 @@ The backend will run on `http://localhost:3100` by default.
 ### 2. Open the Application
 Open your browser to `http://localhost:3100` - the frontend is served from the backend.
 
+**Note**: Local development uses SQLite for simplicity. See [RENDER_DEPLOY.md](RENDER_DEPLOY.md) for PostgreSQL production setup.
+
 ## Deployment Guide
 
-### Option A: Deploy Backend to Render + Frontend to Netlify (RECOMMENDED)
+### **Production (Render + PostgreSQL) - RECOMMENDED**
 
-#### Step 1: Deploy Backend to Render
-1. Go to https://render.com and sign in
-2. Create a new "Web Service" from your GitHub repo
-3. Set Build Command: `cd backend && npm install && npm run db:push && npm run seed`
-4. Set Start Command: `cd backend && npm start`
-5. Add Environment Variables:
-   - `PORT` = `3100`
-   - `JWT_SECRET` = (use a strong random string)
-   - `CORS_ORIGIN` = your Netlify domain (e.g., `https://your-site.netlify.app`)
-6. Deploy and note your Render URL (e.g., `https://codealpha-tasks-2-s5uz.onrender.com`)
+For a fully production-ready deployment with automatic database management:
 
-#### Step 2: Update Frontend for Netlify Deployment
-The frontend needs to know your backend URL:
-1. Update `/frontend/web/app.js` line 1 with your Render backend URL
-2. Commit and push to GitHub
+👉 **See [RENDER_DEPLOY.md](RENDER_DEPLOY.md)** for complete step-by-step instructions.
 
-#### Step 3: Deploy Frontend to Netlify
-1. Go to https://netlify.com and connect your GitHub repo
-2. Set Build Settings:
-   - Build Command: (leave empty)
-   - Publish Directory: `frontend/web`
-3. Deploy
+**Quick Summary:**
+1. Push code to GitHub
+2. Use Render's one-click blueprint deployment (or manual setup)
+3. PostgreSQL database automatically created
+4. Backend runs at `https://your-backend.onrender.com`
+5. Update frontend with backend URL
+6. Deploy frontend to Netlify
 
-### Option B: Deploy Everything to Render (SIMPLER)
+### **Development (Local)**
 
-If you want login to work directly, deploy the entire stack to Render:
+```bash
+# Clone and setup
+git clone <your-repo>
+cd codealpha_tasks-2/backend
 
-1. Create a new Web Service on Render
-2. Set Build Command: `cd backend && npm install && npm run db:push && npm run seed`
-3. Set Start Command: `cd backend && npm start`
-4. Set PORT environment variable to `3100`
-5. The backend automatically serves the frontend from `/frontend/web`
+# Install and run
+npm install
+npm run db:push
+npm start
 
-This works because the backend has `app.use(express.static(FRONTEND_DIR))` built in.
-
-## Why Login Returns 404 on Netlify
-
-When you deploy only the frontend to Netlify:
-- Netlify serves the HTML/CSS/JS files ✅
-- Your frontend JavaScript tries to call `/api/auth/login` ✗
-- Netlify can't find the API endpoint (404 error) because there's no backend
-
-**Solution**: Either:
-1. Deploy backend separately (Render, Heroku, etc.) and update the API URL in `app.js`
-2. Deploy the entire project to Render (backend + frontend together)
+# Open http://localhost:3100
+```
 
 ## Project Structure
 
@@ -111,12 +93,26 @@ After starting the backend with `npm start`:
 ## Environment Variables
 
 ### Backend (.env in /backend directory)
+
+**Local Development (SQLite):**
 ```
+NODE_ENV=development
 PORT=3100
-JWT_SECRET=your_secure_random_string_here
-DATABASE_URL=file:./dev.db (default)
-CORS_ORIGIN=http://localhost:3100 (local) or https://your-netlify-domain.netlify.app (production)
+DATABASE_URL=file:./dev.db
+JWT_SECRET=dev_secret_key_here
+CORS_ORIGIN=http://localhost:3100
 ```
+
+**Production (PostgreSQL on Render):**
+```
+NODE_ENV=production
+PORT=3100
+DATABASE_URL=postgresql://user:password@host:5432/dbname
+JWT_SECRET=your_secure_random_string_here
+CORS_ORIGIN=https://your-netlify-domain.netlify.app
+```
+
+See [RENDER_DEPLOY.md](RENDER_DEPLOY.md) for detailed environment setup.
 
 ### Frontend (no .env file - configured in app.js)
 - Change `BACKEND_URL` in `/frontend/web/app.js` to match your backend deployment URL
