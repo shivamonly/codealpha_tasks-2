@@ -10,17 +10,9 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
-
-// ================== CONFIG ==================
-
 const prisma = new PrismaClient();
 
-const JWT_SECRET = process.env.JWT_SECRET;
-const PORT = process.env.PORT || 3000;
-
-const FRONTEND_DIR = path.join(__dirname, '..', 'frontend', 'web');
-
-// ================== REQUIRED ENV CHECK ==================
+// ================== ENV CHECK ==================
 
 if (!process.env.JWT_SECRET) {
   throw new Error("JWT_SECRET is required");
@@ -29,27 +21,29 @@ if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is required");
 }
 
-// ================== CORS FIX (CRITICAL) ==================
+const JWT_SECRET = process.env.JWT_SECRET;
+const PORT = process.env.PORT || 3000;
+
+// ================== CORS (FIXED) ==================
 
 app.use(cors({
   origin: [
-    "https://your-netlify-app.netlify.app", // 🔁 replace with your real Netlify URL
+    "https://corexd.netlify.app",   // ✅ your frontend
     "http://localhost:5500",
     "http://127.0.0.1:5500"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// Handle preflight requests
-app.options('*', cors());
+// ✅ Preflight handler (VERY IMPORTANT)
+app.options("*", cors());
 
 // ================== MIDDLEWARE ==================
 
 app.use(express.json());
 
-// ================== SOCKET.IO ==================
+// ================== SOCKET ==================
 
 const io = socketIo(server, {
   cors: {
@@ -67,27 +61,18 @@ app.get("/", (req, res) => {
 // ================== HELPERS ==================
 
 function httpError(status, message) {
-  const error = new Error(message);
-  error.status = status;
-  return error;
+  const err = new Error(message);
+  err.status = status;
+  return err;
 }
 
-function asyncHandler(handler) {
+function asyncHandler(fn) {
   return (req, res, next) =>
-    Promise.resolve(handler(req, res, next)).catch(next);
+    Promise.resolve(fn(req, res, next)).catch(next);
 }
 
 function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase();
-}
-
-function sanitizeUser(user) {
-  return {
-    id: user.id,
-    email: user.email,
-    displayName: user.displayName,
-    avatarUrl: user.avatarUrl,
-  };
 }
 
 function signToken(user) {
@@ -100,88 +85,78 @@ function signToken(user) {
 
 // ================== AUTH ==================
 
-app.post('/api/auth/register',
-  asyncHandler(async (req, res) => {
-    const email = normalizeEmail(req.body.email);
-    const password = String(req.body.password || '');
-    const displayName = String(req.body.displayName || '').trim();
+app.post('/api/auth/register', asyncHandler(async (req, res) => {
+  const email = normalizeEmail(req.body.email);
+  const password = String(req.body.password || '');
+  const displayName = String(req.body.displayName || '').trim();
 
-    if (!email || !password || !displayName) {
-      throw httpError(400, 'All fields required');
-    }
+  if (!email || !password || !displayName) {
+    throw httpError(400, 'All fields required');
+  }
 
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) {
-      throw httpError(400, 'Email already registered');
-    }
+  const existing = await prisma.user.findUnique({ where: { email } });
+  if (existing) {
+    throw httpError(400, 'Email already exists');
+  }
 
-    const passwordHash = await bcrypt.hash(password, 10);
+  const passwordHash = await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
-      data: { email, passwordHash, displayName }
-    });
+  const user = await prisma.user.create({
+    data: { email, passwordHash, displayName }
+  });
 
-    res.status(201).json({
-      token: signToken(user),
-      user: sanitizeUser(user)
-    });
-  })
-);
+  res.status(201).json({
+    token: signToken(user),
+    user
+  });
+}));
 
-app.post('/api/auth/login',
-  asyncHandler(async (req, res) => {
-    const email = normalizeEmail(req.body.email);
-    const password = String(req.body.password || '');
+app.post('/api/auth/login', asyncHandler(async (req, res) => {
+  const email = normalizeEmail(req.body.email);
+  const password = String(req.body.password || '');
 
-    const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({ where: { email } });
 
-    if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
-      throw httpError(401, 'Invalid credentials');
-    }
+  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+    throw httpError(401, 'Invalid credentials');
+  }
 
-    res.json({
-      token: signToken(user),
-      user: sanitizeUser(user)
-    });
-  })
-);
+  res.json({
+    token: signToken(user),
+    user
+  });
+}));
 
-// ================== STATIC FIX (IMPORTANT) ==================
+// ================== STATIC FIX ==================
+
+const FRONTEND_DIR = path.join(__dirname, '..', 'frontend', 'web');
 
 if (process.env.RENDER !== 'true') {
   app.use(express.static(FRONTEND_DIR));
 }
 
-app.get('*', (req, res, next) => {
-  if (req.path.startsWith('/api') || req.path.startsWith('/socket.io')) {
-    return next();
-  }
-  return res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
-});
-
 // ================== ERROR HANDLER ==================
 
-app.use((error, req, res, next) => {
-  const status = error.status || 500;
-  console.error(error);
-  res.status(status).json({
-    error: error.message || 'Internal server error',
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal server error'
   });
 });
 
-// ================== START SERVER ==================
+// ================== START ==================
 
 async function startServer() {
   try {
     await prisma.$connect();
-    console.log("✅ Database connected");
+    console.log("✅ DB Connected");
 
     server.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
     });
 
-  } catch (error) {
-    console.error("❌ Startup failed:", error);
+  } catch (err) {
+    console.error("❌ Startup failed:", err);
     process.exit(1);
   }
 }
