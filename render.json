@@ -34,7 +34,7 @@
       ]
     },
     {
-      "type": "pserv",
+      "type": "postgres",
       "name": "core-postgres",
       "plan": "free",
       "ipAllowList": []

@@ -1,3 +1,22 @@
-runtime = "node"
-buildCommand = "cd backend && npm install && npm run db:push"
-startCommand = "cd backend && npm start"
+services:
+  - type: web
+    name: core-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install && npm run db:push
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+      - key: PORT
+        value: 3100
+
+databases:
+  - name: core-db
+    databaseName: core_db
+    user: core_user
+    plan: free
