@@ -1,0 +1,103 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String          @id @default(uuid())
+  email        String          @unique
+  passwordHash String
+  displayName  String
+  avatarUrl    String?
+  preferences  String?         // JSON string or settings
+  memberships  ProjectMember[]
+  projects     Project[]       // Projects owned by user
+  comments     Comment[]
+  activityLogs ActivityLog[]
+  notifications Notification[]
+}
+
+model Project {
+  id          String          @id @default(uuid())
+  name        String
+  description String?
+  ownerId     String
+  owner       User            @relation(fields: [ownerId], references: [id])
+  createdAt   DateTime        @default(now())
+  members     ProjectMember[]
+  columns     Column[]
+}
+
+model ProjectMember {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   // "OWNER", "COLLABORATOR"
+  
+  @@unique([projectId, userId])
+}
+
+model Column {
+  id        String   @id @default(uuid())
+  name      String
+  order     Int
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tasks     Task[]
+}
+
+model Task {
+  id           String        @id @default(uuid())
+  title        String
+  description  String?
+  dueDate      DateTime?
+  priority     String        // "LOW", "MEDIUM", "HIGH"
+  columnId     String
+  column       Column        @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  order        Int
+  assignees    String?       // comma-separated user IDs
+  comments     Comment[]
+  activityLogs ActivityLog[]
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  content   String
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  content   String
+  type      String
+  read      Boolean  @default(false)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId String?
+  taskId    String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, read])
+  @@index([projectId])
+  @@index([taskId])
+}

@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Core project workspace.">
+    <meta name="theme-color" content="#050505">
+    <title>Core | Project Management</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div id="toastHost" class="toast-host" aria-live="polite"></div>
+
+    <section id="authView" class="site-shell">
+      <div id="scrollProgress" class="scroll-progress" aria-hidden="true"></div>
+      <header class="marketing-nav">
+        <a class="brand-mark" href="#top" aria-label="Core home">
+          <span aria-hidden="true"></span>
+          <strong>Core</strong>
+        </a>
+        <nav aria-label="Core sections">
+          <a href="#about">About</a>
+          <a href="#workshop">Workshop</a>
+          <a href="#tech">Tech</a>
+          <a href="#requirements">Requirements</a>
+        </nav>
+        <a class="nav-cta" href="#start">Get started</a>
+      </header>
+
+      <main class="marketing-page">
+        <section id="top" class="auth-hero">
+            <div class="auth-copy reveal-panel">
+            <p class="kicker">Task assignment workspace</p>
+            <h1>Core</h1>
+            <p class="hero-line">Your team is the <span id="rotating-word" class="rotating-word">input.</span></p>
+            <p class="auth-lede">
+              Strip away the chaos. Keep what matters. Create projects, assign cards, and keep every task conversation beside the work.
+            </p>
+            <div class="hero-actions">
+              <a class="primary-btn" href="#start">Create workspace</a>
+              <a class="ghost-btn" href="#workshop">See workflow</a>
+            </div>
+          </div>
+
+          <div id="start" class="auth-panel reveal-panel" aria-label="Authentication">
+            <div class="panel-note">
+              <span>Start here</span>
+              <strong>Register first, then build your board.</strong>
+            </div>
+            <div class="auth-tabs" role="tablist" aria-label="Authentication mode">
+              <button class="auth-tab is-active" type="button" data-auth-tab="register">Register</button>
+              <button class="auth-tab" type="button" data-auth-tab="login">Login</button>
+            </div>
+
+            <form id="registerForm" class="auth-form">
+              <label>
+                Display name
+                <input name="displayName" type="text" autocomplete="name" required>
+              </label>
+              <label>
+                Email
+                <input name="email" type="email" autocomplete="email" required>
+              </label>
+              <label>
+                Password
+                <input name="password" type="password" autocomplete="new-password" minlength="6" required>
+              </label>
+              <button class="primary-btn" type="submit">Create account</button>
+            </form>
+
+            <form id="loginForm" class="auth-form" hidden>
+              <label>
+                Email
+                <input name="email" type="email" autocomplete="email" required>
+              </label>
+              <label>
+                Password
+                <input name="password" type="password" autocomplete="current-password" required>
+              </label>
+              <button class="primary-btn" type="submit">Enter workspace</button>
+            </form>
+            <p id="authStatus" class="status-line" role="status"></p>
+          </div>
+        </section>
+
+        <section id="about" class="story-section">
+          <div class="section-index">01 / About</div>
+          <div>
+            <h2>A quiet control room for project work.</h2>
+            <p>
+              Core is a full-stack project management website built for group projects. Members can create shared projects, organize work into board columns, assign tasks, and keep comments attached to each card.
+            </p>
+          </div>
+        </section>
+
+        <section id="workshop" class="story-section">
+          <div class="section-index">02 / Assigned workshop</div>
+          <div>
+            <h2>From project to assigned conversation.</h2>
+            <div class="step-grid">
+              <article>
+                <span>01</span>
+                <h3>Create group project</h3>
+                <p>Register, create a project, and invite users by email when they need access.</p>
+              </article>
+              <article>
+                <span>02</span>
+                <h3>Assign task cards</h3>
+                <p>Add tasks to board columns, select assignees, set priority, and choose due dates.</p>
+              </article>
+              <article>
+                <span>03</span>
+                <h3>Chat inside tasks</h3>
+                <p>The messenger sidebar shows only tasks assigned to you, so task chat stays focused.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="tech" class="story-section">
+          <div class="section-index">03 / Tech used</div>
+          <div>
+            <h2>The stack behind Core.</h2>
+            <div class="tech-grid">
+              <article>
+                <strong>Frontend</strong>
+                <p>HTML, CSS, and vanilla JavaScript drive the responsive interface, board interactions, modals, and messenger panel.</p>
+              </article>
+              <article>
+                <strong>Backend</strong>
+                <p>Node.js with Express handles auth, projects, columns, tasks, comments, notifications, and static web serving.</p>
+              </article>
+              <article>
+                <strong>Database</strong>
+                <p>Prisma and SQLite store users, project memberships, tasks, comments, activity logs, and notifications.</p>
+              </article>
+              <article>
+                <strong>Real time</strong>
+                <p>Socket.IO keeps board refreshes, comments, member updates, and notifications live between collaborators.</p>
+              </article>
+              <article>
+                <strong>Security</strong>
+                <p>JWT protects API routes, bcrypt hashes passwords, and project membership checks gate project data.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section id="requirements" class="story-section final-story">
+          <div class="section-index">04 / Requirements</div>
+          <div>
+            <h2>What you need to run it.</h2>
+            <ul class="requirement-list">
+              <li>Node.js installed on your machine.</li>
+              <li>Backend dependencies installed with npm.</li>
+              <li>Prisma database pushed to SQLite.</li>
+              <li>A browser opened at the Core server URL.</li>
+            </ul>
+          </div>
+        </section>
+
+        <footer class="marketing-footer">
+          <div class="marketing-footer-grid">
+            <div class="marketing-footer-copy">
+              <p>Core</p>
+              <h2>Plan less noisily. Ship more clearly.</h2>
+              <span>Built for projects, tasks, comments, and live assignment chat.</span>
+            </div>
+            <div class="marketing-footer-contact">
+              <p class="contact-heading">LET'S TALK'S</p>
+              <form id="contactForm" class="contact-form" onsubmit="sendContactMail(event)">
+                <label class="contact-label">
+                  Query
+                  <textarea id="contactQuery" name="query" rows="4" placeholder="Write your message here..." required></textarea>
+                </label>
+                <button type="submit" class="primary-btn contact-submit">Send</button>
+              </form>
+            </div>
+          </div>
+        </footer>
+      </main>
+    </section>
+
+    <section id="appView" class="app-shell" hidden>
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <div>
+            <h1>Core</h1>
+            <p>Strip away the chaos. Keep what matters.</p>
+            <small id="connectionStatus" class="connection-status">Offline</small>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="section-heading">
+            <span>Projects</span>
+            <span id="projectCount">0</span>
+          </div>
+          <div id="projectList" class="project-list"></div>
+        </div>
+
+        <div class="sidebar-footer">
+          <button id="newProjectBtn" class="primary-btn full" type="button">
+            <span aria-hidden="true">+</span> New project
+          </button>
+          <div id="currentUser" class="current-user"></div>
+          <button id="logoutBtn" class="ghost-btn full" type="button">Sign out</button>
+        </div>
+      </aside>
+
+      <div class="workspace-shell">
+        <header class="topbar">
+          <div class="search-box">
+            <span class="material-symbols-outlined" aria-hidden="true">search</span>
+            <input id="searchInput" type="search" aria-label="Search cards">
+          </div>
+          <div class="topbar-actions">
+            <form id="inviteForm" class="invite-form">
+              <input name="email" type="email" aria-label="Invite by email">
+              <button class="ghost-btn" type="submit">Invite</button>
+            </form>
+            <button id="chatBtn" class="icon-btn" type="button" aria-label="Open chat">
+              <span class="material-symbols-outlined" aria-hidden="true">chat</span>
+            </button>
+            <button id="notificationsBtn" class="icon-btn" type="button" aria-label="Open notifications">
+              <span class="material-symbols-outlined" aria-hidden="true">notifications</span>
+              <span id="notificationBadge" class="badge">0</span>
+            </button>
+          </div>
+        </header>
+
+        <main class="workspace">
+          <section class="workspace-hero">
+            <div>
+              <p class="kicker">Current project</p>
+              <h2 id="projectTitle">Select a project</h2>
+              <p id="projectDescription" class="muted">Create or open a project to start planning.</p>
+            </div>
+          </section>
+
+        <section id="boardSection" class="board-band">
+          <div class="board-toolbar">
+            <div>
+              <h3>Board</h3>
+              <p id="boardSubtitle" class="muted">Cards update live when collaborators make changes.</p>
+            </div>
+            <form id="columnForm" class="inline-form">
+              <input name="name" type="text" aria-label="Column name">
+              <button class="ghost-btn" type="submit">Add column</button>
+            </form>
+          </div>
+          <div id="board" class="board" aria-live="polite"></div>
+        </section>
+        </main>
+      </div>
+
+      <aside id="notificationPanel" class="notification-panel" hidden>
+        <div class="panel-header">
+          <div>
+            <p class="kicker">Live</p>
+            <h3>Alerts</h3>
+          </div>
+          <button id="closeNotificationsBtn" class="square-btn" type="button" aria-label="Close alerts">
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+          </button>
+        </div>
+        <div class="panel-actions">
+          <button id="markReadBtn" class="ghost-btn" type="button">Mark read</button>
+          <button id="clearNotificationsBtn" class="ghost-btn danger" type="button">Clear</button>
+        </div>
+        <div id="notificationList" class="notification-list"></div>
+      </aside>
+
+      <aside id="taskDrawer" class="task-drawer" hidden>
+        <div class="drawer-header">
+          <div>
+            <p id="drawerColumn" class="kicker">Task</p>
+            <h3 id="drawerTitle">Task details</h3>
+          </div>
+          <button id="closeDrawerBtn" class="square-btn" type="button" aria-label="Close task details">
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+          </button>
+        </div>
+
+        <form id="taskEditForm" class="drawer-form">
+          <label>
+            Title
+            <input id="editTitle" name="title" type="text" required>
+          </label>
+          <label>
+            Description
+            <textarea id="editDescription" name="description" rows="5"></textarea>
+          </label>
+          <div class="field-grid">
+            <label>
+              Priority
+              <select id="editPriority" name="priority">
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+              </select>
+            </label>
+            <label>
+              Due date
+              <input id="editDueDate" name="dueDate" type="date">
+            </label>
+          </div>
+          <label>
+            Status
+            <select id="editColumn" name="columnId"></select>
+          </label>
+          <div>
+            <span class="label-text">Assignees</span>
+            <div id="editAssignees" class="check-grid"></div>
+          </div>
+          <div class="drawer-actions">
+            <button class="primary-btn" type="submit">Save changes</button>
+            <button id="deleteTaskBtn" class="ghost-btn danger" type="button">Delete</button>
+          </div>
+        </form>
+
+        <section class="comments-section">
+          <div class="section-heading">
+            <span>Comments</span>
+            <span id="commentCount">0</span>
+          </div>
+          <form id="commentForm" class="comment-form">
+            <textarea name="content" rows="3" aria-label="Comment" required></textarea>
+            <button class="ghost-btn" type="submit">Post comment</button>
+          </form>
+          <div id="commentList" class="comment-list"></div>
+        </section>
+
+        <section class="activity-section">
+          <div class="section-heading">
+            <span>Activity</span>
+            <span id="activityCount">0</span>
+          </div>
+          <div id="activityList" class="activity-list"></div>
+        </section>
+      </aside>
+
+      <aside id="chatPanel" class="chat-panel" hidden>
+        <div class="panel-header">
+          <div>
+            <p class="kicker">Assigned chat</p>
+            <h3>Messages</h3>
+          </div>
+          <button id="closeChatBtn" class="square-btn" type="button" aria-label="Close chat">
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+          </button>
+        </div>
+        <div class="chat-layout">
+          <div id="chatTaskList" class="chat-task-list"></div>
+          <section class="chat-thread">
+            <div id="chatThreadHeader" class="chat-thread-header">Choose an assigned task</div>
+            <div id="chatMessages" class="chat-messages"></div>
+            <form id="chatForm" class="chat-form">
+              <textarea name="content" rows="3" aria-label="Message" required></textarea>
+              <button class="primary-btn" type="submit">Send</button>
+            </form>
+          </section>
+        </div>
+      </aside>
+    </section>
+
+    <div id="projectModal" class="modal-backdrop" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
+        <div class="modal-header">
+          <h3 id="projectModalTitle">New project</h3>
+          <button class="square-btn" type="button" data-close-modal="projectModal" aria-label="Close new project">
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+          </button>
+        </div>
+        <form id="projectForm" class="modal-form">
+          <label>
+            Name
+            <input name="name" type="text" required>
+          </label>
+          <label>
+            Description
+            <textarea name="description" rows="4"></textarea>
+          </label>
+          <button class="primary-btn" type="submit">Create project</button>
+        </form>
+      </section>
+    </div>
+
+    <div id="taskModal" class="modal-backdrop" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="taskModalTitle">
+        <div class="modal-header">
+          <h3 id="taskModalTitle">New task</h3>
+          <button class="square-btn" type="button" data-close-modal="taskModal" aria-label="Close new task">
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+          </button>
+        </div>
+        <form id="taskForm" class="modal-form">
+          <input id="taskColumnId" name="columnId" type="hidden">
+          <label>
+            Title
+            <input name="title" type="text" required>
+          </label>
+          <label>
+            Description
+            <textarea name="description" rows="4"></textarea>
+          </label>
+          <div class="field-grid">
+            <label>
+              Priority
+              <select name="priority">
+                <option value="LOW">Low</option>
+                <option value="MEDIUM" selected>Medium</option>
+                <option value="HIGH">High</option>
+              </select>
+            </label>
+            <label>
+              Due date
+              <input name="dueDate" type="date">
+            </label>
+          </div>
+          <div>
+            <span class="label-text">Assignees</span>
+            <div id="taskAssignees" class="check-grid"></div>
+          </div>
+          <button class="primary-btn" type="submit">Add task</button>
+        </form>
+      </section>
+    </div>
+
+    <script>
+      function sendContactMail(event) {
+        event.preventDefault();
+        const queryElement = document.getElementById('contactQuery');
+        const message = queryElement ? queryElement.value.trim() : '';
+        if (!message) {
+          queryElement.focus();
+          return;
+        }
+
+        const mailto = 'mailto:workshivam@yahoo.com'
+          + '?subject=' + encodeURIComponent('Core website query')
+          + '&body=' + encodeURIComponent(message);
+
+        window.location.href = mailto;
+      }
+    </script>
+    <script src="app.js" defer></script>
+  </body>
+</html>
