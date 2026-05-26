@@ -1,7 +1,9 @@
+const BACKEND_URL = 'https://YOUR_BACKEND.onrender.com';
+
 const API_BASE =
-  window.location.protocol === 'file:'
-    ? 'http://localhost:3000'
-    : window.location.origin;
+  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:3100'
+    : BACKEND_URL;
 
 const storage = {
   token: 'core_token',
@@ -1128,7 +1130,7 @@ function loadSocketIo() {
   return new Promise((resolve) => {
     if (typeof io === 'function') return resolve();
     const script = document.createElement('script');
-    const socketBase = window.location.protocol === 'file:' ? 'http://localhost:3000' : API_BASE;
+    const socketBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3100' : API_BASE;
     script.src = `${socketBase}/socket.io/socket.io.js`;
     script.onload = () => resolve();
     script.onerror = () => {
@@ -1375,3 +1377,8 @@ function signOut() {
   localStorage.removeItem(storage.project);
   showAuth();
 }
+
+
+
+
+
